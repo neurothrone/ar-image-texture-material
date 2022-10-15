@@ -5,39 +5,46 @@
 //  Created by Zaid Neurothrone on 2022-10-15.
 //
 
-import SwiftUI
+import Combine
 import RealityKit
+import SwiftUI
 
 struct ContentView : View {
-    var body: some View {
-        ARViewContainer().edgesIgnoringSafeArea(.all)
-    }
+  var body: some View {
+    ARViewContainer().edgesIgnoringSafeArea(.all)
+  }
+}
+
+final class Coordinator {
+  var arView: ARView?
+  var cancellable: Cancellable?
+  
+  func setUp() {
+    
+  }
 }
 
 struct ARViewContainer: UIViewRepresentable {
+  func makeUIView(context: Context) -> ARView {
+    let arView = ARView(frame: .zero)
     
-    func makeUIView(context: Context) -> ARView {
-        
-        let arView = ARView(frame: .zero)
-        
-        // Load the "Box" scene from the "Experience" Reality File
-        let boxAnchor = try! Experience.loadBox()
-        
-        // Add the box anchor to the scene
-        arView.scene.anchors.append(boxAnchor)
-        
-        return arView
-        
-    }
+    context.coordinator.arView = arView
+    context.coordinator.setUp()
     
-    func updateUIView(_ uiView: ARView, context: Context) {}
-    
+    return arView
+  }
+  
+  func updateUIView(_ uiView: ARView, context: Context) {}
+  
+  func makeCoordinator() -> Coordinator {
+    .init()
+  }
 }
 
 #if DEBUG
 struct ContentView_Previews : PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
+  static var previews: some View {
+    ContentView()
+  }
 }
 #endif
